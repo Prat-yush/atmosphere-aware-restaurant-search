@@ -22,6 +22,7 @@ BM25_PATH = PROC_DIR / "bm25.pkl"
 DENSE_INDEX_PATH = PROC_DIR / "dense.faiss"
 INDEX_IDS_PATH = PROC_DIR / "index_ids.parquet"  # row i of both indexes -> sent_id
 POLARITY_CHUNK_DIR = PROC_DIR / "polarity_chunks"  # nli.py checkpoints
+RESTAURANT_BM25_PATH = PROC_DIR / "bm25_restaurants.pkl"  # bm25_baseline: one doc per restaurant
 
 # --- Business filter -----------------------------------------------------
 TARGET_CITY = "philadelphia"  # compared after strip + casefold

@@ -153,3 +153,52 @@ def test_faiss_stays_exact_across_torch_calls():
         exact = emb @ query
         assert ids.tolist() == np.argsort(-exact)[:50].tolist()
         assert np.allclose(scores, exact[ids], atol=1e-5)
+
+
+# --- Restaurant-level sparse BM25 (bm25_baseline) -----------------------------------
+
+DOCS = [
+    "quiet romantic place with dim lighting",
+    "loud sports bar loud music",
+    "the the the place place",
+    "cozy quiet cafe the best",
+    "romantic dinner the place",
+]
+
+
+def test_sparse_bm25_matches_rank_bm25():
+    from rank_bm25 import BM25Okapi
+
+    reviews = [{"business_id": f"b{i}", "text": t} for i, t in enumerate(DOCS)]
+    counts, vocab = index.build_restaurant_counts(reviews, [f"b{i}" for i in range(len(DOCS))], flush_every=2)
+    ours = index.SparseBM25(counts, vocab)
+    ref = BM25Okapi([index.tokenize(t) for t in DOCS])
+    # "the"/"place" appear in >half the docs (negative idf -> epsilon floor); "loud loud" repeats; "zzz" unknown
+    for q in ["quiet", "romantic place", "the place", "loud loud", "zzz", "quiet zzz the", ""]:
+        assert np.allclose(ours.get_scores(index.tokenize(q)), ref.get_scores(index.tokenize(q))), q
+
+
+def test_restaurant_counts_concatenate_reviews_per_business():
+    reviews = [
+        {"business_id": "b", "text": "quiet place"},
+        {"business_id": "a", "text": "loud"},
+        {"business_id": "b", "text": "quiet again"},
+    ]
+    counts, vocab = index.build_restaurant_counts(reviews, ["a", "b"], flush_every=1)
+    assert counts.shape == (2, 4)
+    assert counts[1, vocab["quiet"]] == 2 and counts[0, vocab["loud"]] == 1
+    assert counts[0, vocab["quiet"]] == 0
+
+
+def test_restaurant_bm25_save_load_roundtrip(tmp_path):
+    """Stored as plain data, so it loads no matter which module wrote it (was a __main__ pickle bug)."""
+    reviews = [{"business_id": f"b{i}", "text": t} for i, t in enumerate(DOCS)]
+    bids = [f"b{i}" for i in range(len(DOCS))]
+    counts, vocab = index.build_restaurant_counts(reviews, bids)
+    path = tmp_path / "bm25_restaurants.pkl"
+    index.save_restaurant_bm25(counts, vocab, np.array(bids), path)
+    bm25, loaded_ids = index.load_restaurant_bm25(path)
+    assert loaded_ids.tolist() == bids
+    q = index.tokenize("quiet romantic place")
+    assert np.allclose(bm25.get_scores(q), index.SparseBM25(counts, vocab).get_scores(q))
+    assert index.load_restaurant_bm25(tmp_path / "missing.pkl") is None
