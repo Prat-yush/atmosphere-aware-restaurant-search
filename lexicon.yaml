@@ -3,6 +3,11 @@
 # Each aspect has exactly two poles: `positive` and `negative`.
 # Each pole has a short id, one NLI hypothesis, and seed terms.
 #
+# Hypotheses are short and past tense with an aspect subject ("The lighting was dim.").
+# Review sentences rarely say "restaurant", and nli-deberta-v3-small scored clearly
+# supporting sentences as neutral against "This restaurant is ..." hypotheses
+# (sign accuracy 61/72 vs 72/72 on a hand-written probe set, 2026-10-19).
+#
 # Matching rules (see src/prep.py):
 #   - case-insensitive, whole-word (no match inside a longer word: "cloud" != "loud")
 #   - a space in a term also matches a hyphen or several spaces ("low key" == "low-key")
@@ -37,7 +42,7 @@ aspects:
   noise:
     positive:
       id: quiet
-      hypothesis: "This restaurant is quiet."
+      hypothesis: "The atmosphere was quiet."
       terms:
         - quiet
         - quieter
@@ -56,7 +61,7 @@ aspects:
         - not too noisy
     negative:
       id: loud
-      hypothesis: "This restaurant is loud."
+      hypothesis: "The atmosphere was loud."
       terms:
         - loud
         - louder
@@ -77,7 +82,7 @@ aspects:
   energy:
     positive:
       id: lively
-      hypothesis: "This restaurant has a lively atmosphere."
+      hypothesis: "The atmosphere was lively."
       terms:
         - lively
         - vibrant
@@ -96,7 +101,7 @@ aspects:
         - party atmosphere
     negative:
       id: dull
-      hypothesis: "This restaurant has a dull atmosphere."
+      hypothesis: "The atmosphere was dull."
       terms:
         - dull
         - boring
@@ -117,7 +122,7 @@ aspects:
   space:
     positive:
       id: cozy
-      hypothesis: "This restaurant has a comfortable, inviting space."
+      hypothesis: "The space was comfortable."
       terms:
         - cozy
         - cosy
@@ -136,7 +141,7 @@ aspects:
         - tables are spaced
     negative:
       id: cramped
-      hypothesis: "This restaurant is cramped."
+      hypothesis: "The space was cramped."
       terms:
         - cramped
         - crammed
@@ -156,7 +161,7 @@ aspects:
   romance:
     positive:
       id: romantic
-      hypothesis: "This restaurant is romantic."
+      hypothesis: "The atmosphere was romantic."
       terms:
         - romantic
         - romance
@@ -174,7 +179,7 @@ aspects:
         - special someone
     negative:
       id: unromantic
-      hypothesis: "This restaurant is not romantic."
+      hypothesis: "The atmosphere was not romantic."
       terms:
         - unromantic
         - not romantic
@@ -195,7 +200,7 @@ aspects:
   lighting:
     positive:
       id: dim
-      hypothesis: "This restaurant has dim lighting."
+      hypothesis: "The lighting was dim."
       terms:
         - dim
         - dimly
@@ -213,7 +218,7 @@ aspects:
         - too dark
     negative:
       id: bright
-      hypothesis: "This restaurant is brightly lit."
+      hypothesis: "The lighting was bright."
       terms:
         - brightly lit
         - bright lighting
@@ -233,7 +238,7 @@ aspects:
   music:
     positive:
       id: good_music
-      hypothesis: "This restaurant has pleasant background music."
+      hypothesis: "The music was pleasant."
       terms:
         - background music
         - good music
@@ -250,7 +255,7 @@ aspects:
         - piano player
     negative:
       id: loud_music
-      hypothesis: "The music in this restaurant is too loud."
+      hypothesis: "The music was too loud."
       terms:
         - loud music
         - music too loud

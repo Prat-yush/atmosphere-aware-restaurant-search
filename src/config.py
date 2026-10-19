@@ -21,6 +21,7 @@ POLARITY_PATH = PROC_DIR / "polarity.parquet"
 BM25_PATH = PROC_DIR / "bm25.pkl"
 DENSE_INDEX_PATH = PROC_DIR / "dense.faiss"
 INDEX_IDS_PATH = PROC_DIR / "index_ids.parquet"  # row i of both indexes -> sent_id
+POLARITY_CHUNK_DIR = PROC_DIR / "polarity_chunks"  # nli.py checkpoints
 
 # --- Business filter -----------------------------------------------------
 TARGET_CITY = "philadelphia"  # compared after strip + casefold
@@ -42,3 +43,6 @@ DENSE_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 NLI_MODEL = "cross-encoder/nli-deberta-v3-small"
 EMBED_BATCH_SIZE = 256
 EMBED_DEVICE = None  # None = sentence-transformers auto-select (cuda > mps > cpu)
+NLI_BATCH_SIZE = 64  # pairs per forward pass; fastest on M3 MPS (337 pairs/s vs 241 at 128)
+NLI_MAX_LENGTH = 128  # tokens; covers >99% of kept sentences plus a hypothesis
+NLI_CHUNK_SIZE = 4096  # sentences per checkpoint file
