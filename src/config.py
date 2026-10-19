@@ -18,6 +18,9 @@ RAW_REVIEW_PATH = RAW_DIR / "yelp_academic_dataset_review.json"
 BUSINESSES_PATH = PROC_DIR / "businesses.parquet"
 SENTENCES_PATH = PROC_DIR / "sentences.parquet"
 POLARITY_PATH = PROC_DIR / "polarity.parquet"
+BM25_PATH = PROC_DIR / "bm25.pkl"
+DENSE_INDEX_PATH = PROC_DIR / "dense.faiss"
+INDEX_IDS_PATH = PROC_DIR / "index_ids.parquet"  # row i of both indexes -> sent_id
 
 # --- Business filter -----------------------------------------------------
 TARGET_CITY = "philadelphia"  # compared after strip + casefold
@@ -37,3 +40,5 @@ M_SHRINK = 4  # pseudo-count for shrinkage toward global mean
 # --- Models --------------------------------------------------------------
 DENSE_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 NLI_MODEL = "cross-encoder/nli-deberta-v3-small"
+EMBED_BATCH_SIZE = 256
+EMBED_DEVICE = None  # None = sentence-transformers auto-select (cuda > mps > cpu)

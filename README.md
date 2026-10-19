@@ -48,7 +48,7 @@ Each step is idempotent. It skips outputs that already exist unless you pass `--
 | step | command | output |
 |---|---|---|
 | 1. filter + sentence extraction | `python -m src.prep` | `data/proc/businesses.parquet`, `data/proc/sentences.parquet` |
-| 2. BM25 + dense index | `python -m src.index` | *(next)* |
+| 2. BM25 + dense index | `python -m src.index` | `data/proc/bm25.pkl`, `data/proc/dense.faiss`, `data/proc/index_ids.parquet` |
 | 3. NLI polarity | `python -m src.nli` | `data/proc/polarity.parquet` *(week 2)* |
 
 For a quick sample run, use `python -m src.prep --max-reviews 50000`. It writes
@@ -65,12 +65,29 @@ For a quick sample run, use `python -m src.prep --max-reviews 50000`. It writes
   before matching.
 - `sent_id` is `<review_id>_<sentence index within review>`, which stays stable across runs.
 
+### Step 2 details
+
+- BM25 (`rank_bm25.BM25Okapi`): lowercase word tokens, with contractions kept whole
+  ("wasn't"). No stemming and no stopword removal.
+- Dense: `all-MiniLM-L6-v2` embeddings, L2-normalized, in a FAISS `IndexFlatIP`. Inner
+  product equals cosine similarity, and search is exact.
+- Row *i* of both indexes is row *i* of `index_ids.parquet` (`sent_id`, `business_id`).
+  `load_indexes()` refuses to load misaligned files.
+
+### macOS note
+
+torch and faiss-cpu each bundle their own OpenMP runtime, and loading both in one process
+aborts. On macOS, `src/__init__.py` sets `KMP_DUPLICATE_LIB_OK=TRUE` and `OMP_NUM_THREADS=1`
+before anything else is imported. The test suite checks that faiss results still match
+numpy exactly after torch has run. Linux and Colab are unaffected.
+
 ## Layout
 
 ```
 lexicon.yaml      frozen aspect lexicon (6 aspects x 2 poles, NLI hypotheses)
 src/config.py     paths, hyperparameters, model names
 src/prep.py       step 1
+src/index.py      step 2
 tests/            pytest suite
 queries/          hand-written queries and qrels (not generated)
 ```
