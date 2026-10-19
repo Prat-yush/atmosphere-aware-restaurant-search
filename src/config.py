@@ -12,6 +12,10 @@ PROC_DIR = DATA_DIR / "proc"
 QUERIES_DIR = ROOT / "queries"
 
 LEXICON_PATH = ROOT / "lexicon.yaml"
+TEST_QUERIES_PATH = QUERIES_DIR / "test.jsonl"
+DEV_QUERIES_PATH = QUERIES_DIR / "dev.jsonl"
+QRELS_PATH = QUERIES_DIR / "qrels.tsv"
+EVAL_DIR = DATA_DIR / "eval"  # grading/labeling CSVs hold Yelp text: gitignored, back them up yourself
 RAW_BUSINESS_PATH = RAW_DIR / "yelp_academic_dataset_business.json"
 RAW_REVIEW_PATH = RAW_DIR / "yelp_academic_dataset_review.json"
 
