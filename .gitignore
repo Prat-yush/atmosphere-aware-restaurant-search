@@ -1,0 +1,14 @@
+# Dataset and all derived artifacts (Yelp license forbids redistribution)
+data/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+*.egg-info/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

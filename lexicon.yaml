@@ -1,0 +1,269 @@
+# AmbiSense aspect lexicon (frozen).
+#
+# Each aspect has exactly two poles: `positive` and `negative`.
+# Each pole has a short id, one NLI hypothesis, and seed terms.
+#
+# Matching rules (see src/prep.py):
+#   - case-insensitive, whole-word (no match inside a longer word: "cloud" != "loud")
+#   - a space in a term also matches a hyphen or several spaces ("low key" == "low-key")
+#   - curly apostrophes in text are normalized to straight ones before matching
+#   - inflections are listed explicitly; there is no stemming
+#
+# `exclude` phrases are blanked out of a sentence before matching, so food or
+# non-atmosphere uses of a seed term ("dim sum", "sea bass") do not match.
+
+exclude:
+  - dim sum
+  - packed full of flavor
+  - packed a punch
+  - packs a punch
+  - packed lunch
+  - to go box was packed
+  - well packed
+  - packed up
+  - packed with
+  - packed onto
+  - dead wrong
+  - fresh squeezed
+  - freshly squeezed
+  - jazz up
+  - jazz it up
+  - jazz them up
+  - hopping on
+  - hopping off
+  - bar hopping
+
+aspects:
+  noise:
+    positive:
+      id: quiet
+      hypothesis: "This restaurant is quiet."
+      terms:
+        - quiet
+        - quieter
+        - quietest
+        - peaceful
+        - tranquil
+        - serene
+        - hushed
+        - can hear each other
+        - could hear each other
+        - able to hear each other
+        - easy to have a conversation
+        - easy to talk
+        - good for conversation
+        - not too loud
+        - not too noisy
+    negative:
+      id: loud
+      hypothesis: "This restaurant is loud."
+      terms:
+        - loud
+        - louder
+        - noisy
+        - noise level
+        - deafening
+        - had to shout
+        - have to shout
+        - had to yell
+        - have to yell
+        - couldn't hear
+        - could not hear
+        - can't hear
+        - hard to hear
+        - hard to have a conversation
+        - rowdy
+
+  energy:
+    positive:
+      id: lively
+      hypothesis: "This restaurant has a lively atmosphere."
+      terms:
+        - lively
+        - vibrant
+        - buzzing
+        - bustling
+        - energetic
+        - high energy
+        - great energy
+        - hopping
+        - upbeat
+        - packed
+        - fun vibe
+        - fun atmosphere
+        - great vibe
+        - good vibes
+        - party atmosphere
+    negative:
+      id: dull
+      hypothesis: "This restaurant has a dull atmosphere."
+      terms:
+        - dull
+        - boring
+        - lifeless
+        - sterile
+        - depressing
+        - dead inside
+        - dead in there
+        - was dead
+        - was empty
+        - pretty empty
+        - completely empty
+        - ghost town
+        - no atmosphere
+        - lacks atmosphere
+        - no vibe
+
+  space:
+    positive:
+      id: cozy
+      hypothesis: "This restaurant has a comfortable, inviting space."
+      terms:
+        - cozy
+        - cosy
+        - cozier
+        - comfy
+        - spacious
+        - roomy
+        - light and airy
+        - plenty of room
+        - plenty of space
+        - lots of space
+        - open space
+        - high ceilings
+        - comfortable seating
+        - well spaced
+        - tables are spaced
+    negative:
+      id: cramped
+      hypothesis: "This restaurant is cramped."
+      terms:
+        - cramped
+        - crammed
+        - crowded
+        - claustrophobic
+        - tight space
+        - tight quarters
+        - squeezed
+        - packed in
+        - like sardines
+        - on top of each other
+        - elbow to elbow
+        - shoulder to shoulder
+        - tables are close
+        - no elbow room
+
+  romance:
+    positive:
+      id: romantic
+      hypothesis: "This restaurant is romantic."
+      terms:
+        - romantic
+        - romance
+        - date night
+        - date spot
+        - date place
+        - first date
+        - perfect date
+        - great date
+        - intimate
+        - candlelit
+        - candle lit
+        - candlelight
+        - anniversary
+        - special someone
+    negative:
+      id: unromantic
+      hypothesis: "This restaurant is not romantic."
+      terms:
+        - unromantic
+        - not romantic
+        - not very romantic
+        - not a date spot
+        - not a date place
+        - not for a date
+        - not a first date
+        - not intimate
+        - cafeteria
+        - sports bar
+        - screaming kids
+        - screaming children
+        - crying baby
+        - crying babies
+        - kids running around
+
+  lighting:
+    positive:
+      id: dim
+      hypothesis: "This restaurant has dim lighting."
+      terms:
+        - dim
+        - dimly
+        - dimly lit
+        - dim lighting
+        - low lighting
+        - low light
+        - mood lighting
+        - moody lighting
+        - soft lighting
+        - warm lighting
+        - ambient lighting
+        - dark inside
+        - dark interior
+        - too dark
+    negative:
+      id: bright
+      hypothesis: "This restaurant is brightly lit."
+      terms:
+        - brightly lit
+        - bright lighting
+        - bright lights
+        - bright and airy
+        - too bright
+        - well lit
+        - harsh lighting
+        - harsh lights
+        - fluorescent
+        - natural light
+        - lots of light
+        - sunlit
+        - big windows
+        - large windows
+
+  music:
+    positive:
+      id: good_music
+      hypothesis: "This restaurant has pleasant background music."
+      terms:
+        - background music
+        - good music
+        - great music
+        - nice music
+        - soft music
+        - chill music
+        - soothing music
+        - music selection
+        - playlist
+        - jazz
+        - live music
+        - pianist
+        - piano player
+    negative:
+      id: loud_music
+      hypothesis: "The music in this restaurant is too loud."
+      terms:
+        - loud music
+        - music too loud
+        - music was too loud
+        - music is too loud
+        - music was way too loud
+        - music was so loud
+        - music was loud
+        - music is loud
+        - music blasting
+        - blasting music
+        - blaring
+        - over the music
+        - thumping
+        - dj
+        - club music
