@@ -8,7 +8,9 @@ Workflow:
     python -m src.eval polarity-sample      # -> data/eval/polarity_sample.csv (100 sentences to label)
     (label it: `label` = pos, neg or none)
     python -m src.eval polarity-accuracy    # NLI accuracy against your labels
-    python -m src.eval tune                 # grid over k, m, mu on dev queries only
+    python -m src.eval tune                 # grid over k, m, mu, top_n on dev queries only
+                                            # (also judged@10 and judged-only nDCG: settings far
+                                            #  from the pooled ones surface unjudged restaurants)
 
 Queries (written by hand): queries/{test,dev}.jsonl with fields qid, text,
 category in {single, mixed, negation, contrast}. Qrels: queries/qrels.tsv with header
@@ -34,7 +36,7 @@ CATEGORIES = ("single", "mixed", "negation", "contrast")
 SYSTEMS = ("bm25_baseline", "no_polarity", "full")
 POOL_DEPTH = 10
 POLARITY_SAMPLE_SIZE = 100
-TUNE_GRID = {"k": (5, 10, 20), "m": (0, 2, 4, 8), "mu": (None, 0.0)}  # mu None = per-target mean raw
+TUNE_GRID = {"k": (5, 10, 20), "m": (0, 2, 4, 8), "mu": (None, 0.0), "top_n": (1000, 3000)}  # mu None = per-target mean raw
 
 
 # --- Metrics (pure) -------------------------------------------------------------
@@ -49,6 +51,16 @@ def ndcg_at_k(ranked: Sequence[str], grades: dict[str, int], k: int = 10) -> flo
     if ideal == 0:
         return 0.0
     return dcg([grades.get(b, 0) for b in ranked[:k]]) / ideal
+
+
+def judged_only(ranked: Sequence[str], grades: dict[str, int]) -> list[str]:
+    """Condensed list (Sakai 2007): drop unjudged results so they are not silently counted as grade 0."""
+    return [b for b in ranked if b in grades]
+
+
+def judged_fraction(ranked: Sequence[str], grades: dict[str, int], k: int = 10) -> float:
+    top = list(ranked[:k])
+    return sum(b in grades for b in top) / len(top) if top else 0.0
 
 
 def precision_at_k(ranked: Sequence[str], grades: dict[str, int], k: int = 5, min_grade: int = 1) -> float:
@@ -289,11 +301,17 @@ def cmd_tune(args) -> None:
     qrels = load_qrels(config.QRELS_PATH)
     ranker = Ranker(load_baseline=False)
     rows = []
-    for k, m, mu in itertools.product(*TUNE_GRID.values()):
-        ranker.k, ranker.m, ranker.mu = k, m, mu
-        run = {"full": run_system(ranker, queries, "full", POOL_DEPTH)}
-        res = evaluate(run, queries, qrels)
-        rows.append({"k": k, "m": m, "mu": "auto" if mu is None else mu, "ndcg@10": res["ndcg@10"].mean(), "p@5": res["p@5"].mean()})
+    for k, m, mu, top_n in itertools.product(*TUNE_GRID.values()):
+        ranker.k, ranker.m, ranker.mu, ranker.top_n = k, m, mu, top_n
+        run = run_system(ranker, queries, "full", 50)  # deeper than 10 so the condensed list can refill
+        res = evaluate({"full": run}, queries, qrels)
+        g = [qrels.get(q["qid"], {}) for q in queries]
+        rows.append({
+            "k": k, "m": m, "mu": "auto" if mu is None else f"{mu:g}", "top_n": top_n,
+            "ndcg@10": res["ndcg@10"].mean(), "p@5": res["p@5"].mean(),
+            "judged@10": np.mean([judged_fraction(run[q["qid"]], gr) for q, gr in zip(queries, g)]),
+            "ndcg@10_judged": np.mean([ndcg_at_k(judged_only(run[q["qid"]], gr), gr) for q, gr in zip(queries, g)]),
+        })
     table = pd.DataFrame(rows).sort_values(["ndcg@10", "p@5"], ascending=False)
     print(table.to_string(index=False, float_format="%.3f"))
     config.EVAL_DIR.mkdir(parents=True, exist_ok=True)

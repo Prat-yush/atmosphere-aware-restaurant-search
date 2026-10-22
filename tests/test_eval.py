@@ -162,3 +162,16 @@ def test_polarity_accuracy():
     assert res["n_labeled"] == 3
     assert res["accuracy_3way"] == pytest.approx(2 / 3)
     assert res["accuracy_on_pos_neg"] == pytest.approx(1 / 2)
+
+
+# --- Unjudged results ------------------------------------------------------------------------------
+
+def test_judged_only_and_fraction():
+    grades = {"a": 2, "b": 0}
+    ranked = ["x", "a", "y", "b"]
+    assert ev.judged_only(ranked, grades) == ["a", "b"]
+    assert ev.judged_fraction(ranked, grades, k=4) == pytest.approx(0.5)
+    assert ev.judged_fraction([], grades) == 0.0
+    # an unjudged result above a relevant one costs nDCG, but not after condensing
+    assert ev.ndcg_at_k(ranked, grades) < 1.0
+    assert ev.ndcg_at_k(ev.judged_only(ranked, grades), grades) == pytest.approx(1.0)
