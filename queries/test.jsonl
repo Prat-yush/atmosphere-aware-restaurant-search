@@ -1,0 +1,30 @@
+{"qid": "t01", "text": "a quiet restaurant", "category": "single"}
+{"qid": "t02", "text": "somewhere with a lively atmosphere", "category": "single"}
+{"qid": "t03", "text": "cozy little spot", "category": "single"}
+{"qid": "t04", "text": "romantic dinner place", "category": "single"}
+{"qid": "t05", "text": "dimly lit restaurant", "category": "single"}
+{"qid": "t06", "text": "place with good background music", "category": "single"}
+{"qid": "t07", "text": "spacious dining room for a big group", "category": "single"}
+{"qid": "t08", "text": "restaurant with lots of natural light", "category": "single"}
+{"qid": "t09", "text": "quiet and romantic for an anniversary dinner", "category": "mixed"}
+{"qid": "t10", "text": "lively bar with live music", "category": "mixed"}
+{"qid": "t11", "text": "cozy, dimly lit and intimate", "category": "mixed"}
+{"qid": "t12", "text": "fun atmosphere with great music for a birthday", "category": "mixed"}
+{"qid": "t13", "text": "romantic spot with candlelight and soft music", "category": "mixed"}
+{"qid": "t14", "text": "bright, airy and spacious brunch place", "category": "mixed"}
+{"qid": "t15", "text": "quiet cozy place to catch up with a friend", "category": "mixed"}
+{"qid": "t16", "text": "buzzing date night spot", "category": "mixed"}
+{"qid": "t17", "text": "not too loud", "category": "negation"}
+{"qid": "t18", "text": "a restaurant that isn't noisy", "category": "negation"}
+{"qid": "t19", "text": "not cramped", "category": "negation"}
+{"qid": "t20", "text": "dinner spot where the music isn't too loud", "category": "negation"}
+{"qid": "t21", "text": "a place that's never boring", "category": "negation"}
+{"qid": "t22", "text": "not a sports bar", "category": "negation"}
+{"qid": "t23", "text": "no fluorescent lighting", "category": "negation"}
+{"qid": "t24", "text": "lively but not loud", "category": "contrast"}
+{"qid": "t25", "text": "quiet but not boring, good for a first date", "category": "contrast"}
+{"qid": "t26", "text": "cozy but not cramped", "category": "contrast"}
+{"qid": "t27", "text": "energetic without loud music", "category": "contrast"}
+{"qid": "t28", "text": "dim and romantic but not dead", "category": "contrast"}
+{"qid": "t29", "text": "busy and fun but we can still hear each other", "category": "contrast"}
+{"qid": "t30", "text": "intimate but not stuffy", "category": "contrast"}
