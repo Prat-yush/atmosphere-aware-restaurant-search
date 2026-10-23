@@ -78,6 +78,7 @@ def test_human_check_is_blind_and_limited_to_check_queries():
     assert rows["qid"].tolist() == ["t09", "t09", "t17"]
     assert "judge_reason" not in rows.columns
     assert (rows["grade"] == "").all()  # LLM grades never shown to the human
+    assert rows["lookup"].iloc[0].startswith("https://www.google.com/maps/search/?api=1&query=A+")
 
 
 def test_agreement_joins_on_query_and_business():

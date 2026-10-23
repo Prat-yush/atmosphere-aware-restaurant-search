@@ -96,9 +96,17 @@ def sample_evidence(business_ids: set[str], n: int = SENTENCES_PER_TOPIC, seed: 
 
 # --- Human check and agreement --------------------------------------------------------------
 
+def lookup_url(name: str, address: str) -> str:
+    """Google Maps search for the restaurant, so the grader can read reviews and see photos."""
+    from urllib.parse import quote_plus
+
+    return "https://www.google.com/maps/search/?api=1&query=" + quote_plus(f"{name} {address} Philadelphia")
+
+
 def human_check_rows(pool: pd.DataFrame, qids=HUMAN_CHECK_QIDS) -> pd.DataFrame:
     rows = pool[pool["qid"].isin(qids)].drop(columns=[c for c in pool.columns if c not in {
         "qid", "query", "business_id", "name", "address", "postal_code", "price", "categories"}])
+    rows = rows.assign(lookup=[lookup_url(n, a) for n, a in zip(rows["name"], rows["address"])])
     return rows.assign(grade="").reset_index(drop=True)
 
 
