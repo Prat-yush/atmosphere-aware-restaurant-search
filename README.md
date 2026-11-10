@@ -22,7 +22,9 @@ pytest
 
 This project uses the [Yelp Open Dataset](https://business.yelp.com/data/resources/open-dataset/).
 By downloading it you accept the Yelp Dataset Terms of Use (non-commercial and academic use,
-no redistribution). `data/` is gitignored. Never commit raw or derived data.
+no redistribution). `data/` is gitignored. Never commit raw or derived data, with one exception:
+the web UI's export in `docs/idx/` (see *Web UI*), hosted with Yelp's permission for this course
+only and to be taken down after the Fall 2026 semester.
 
 ```bash
 mkdir -p data/download data/raw
@@ -139,6 +141,26 @@ python -m src.eval tune               # k, m, mu grid on dev queries only
 
 `data/eval/` holds Yelp text, so it is gitignored. Back up your graded CSVs yourself.
 
+### Web UI (`docs/`, GitHub Pages)
+
+A static page that runs the `full` system in the browser. The retrieval text is always
+"<pole hypothesis> <lexicon term>", so `src/export_web.py` precomputes every retrieval
+(174 terms x 2 poles) with the real BM25 + dense + RRF and keeps only the sentences the
+ranker can use (first k = 10 per restaurant). `docs/engine.js` ports the parser and the
+scoring arithmetic.
+
+```bash
+python -m src.export_web                          # -> docs/idx/ (~36 MB, 348 retrieval files)
+python3 -m http.server 8765 --directory docs      # then open http://127.0.0.1:8765/
+```
+
+Checked against `src/rank.py`: the JS parser matches on 2,807 queries, and all 36 evaluation
+queries give the same top 10. Small differences can appear deep in a ranking (embeddings
+shift by ~1e-7 with batch composition) and for hyphen/space variants of a term ("dimly-lit"
+retrieves with the lexicon spelling "dimly lit"). Re-run the export whenever the lexicon,
+indexes, polarity or k/m change. Hosting: Settings -> Pages -> deploy from branch `main`,
+folder `/docs`. The page sets `noindex`.
+
 ### macOS note
 
 torch and faiss-cpu each bundle their own OpenMP runtime, and loading both in one process
@@ -157,6 +179,8 @@ src/nli.py        step 3
 src/parse.py      query parser
 src/rank.py       step 4
 src/eval.py       step 5
+src/export_web.py data for the web UI
+docs/             static web UI (GitHub Pages)
 tests/            pytest suite
 queries/          hand-written queries and qrels (not generated)
 ```

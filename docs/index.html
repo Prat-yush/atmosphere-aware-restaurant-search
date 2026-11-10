@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>AmbiSense</title>
+  <meta name="description" content="Atmosphere-aware restaurant search over review evidence (CSCE 670 course project).">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Philadelphia restaurants</p>
+      <h1>AmbiSense</h1>
+      <p class="lede">Describe the atmosphere you want. Results are ranked by what reviewers actually said, with the sentences for and against each place.</p>
+      <form id="search" class="search" role="search">
+        <label for="q" class="visually-hidden">Describe the atmosphere</label>
+        <input id="q" name="q" type="search" autocomplete="off" spellcheck="false"
+               placeholder="quiet but not boring, good for a first date" required>
+        <button type="submit">Search</button>
+      </form>
+      <div class="examples" id="examples" aria-label="Example searches"></div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="understood" class="understood" hidden aria-live="polite"></section>
+    <p id="status" class="status" role="status"></p>
+    <ol id="results" class="results"></ol>
+    <div class="more"><button id="more" type="button" hidden>Show more</button></div>
+
+    <details class="about">
+      <summary>How ranking works</summary>
+      <ol>
+        <li>The query is split into <b>atmosphere targets</b> (noise, energy, space, romance, lighting, music), using a fixed lexicon. Negations like "not too loud" flip the target to its opposite ("quiet").</li>
+        <li>For each target, review sentences about that aspect are retrieved with BM25 and dense embeddings, fused with reciprocal rank fusion.</li>
+        <li>An NLI model scores each sentence from −1 (contradicts the target) to +1 (supports it). A restaurant's score for the target is the similarity-weighted average over its top 10 sentences, pulled toward the overall average when it has little evidence.</li>
+        <li>The final score is the mean over targets, from −1 to +1.</li>
+      </ol>
+    </details>
+  </main>
+
+  <footer class="wrap footer">
+    CSCE 670 course project, Texas A&amp;M, Fall 2026. Review text from the Yelp Open Dataset, used for academic purposes.
+    Not affiliated with or endorsed by Yelp.
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
