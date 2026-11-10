@@ -73,3 +73,11 @@ average noise).
 | d04 | not too crowded | space: not crowded |
 | d05 | a restaurant that isn't dull | energy: not dull |
 | d06 | vibrant but not noisy | energy: vibrant; noise: quiet or average |
+
+## Amendment (2026-11-09): partial credit
+
+Added after the human check, so it is a post-hoc change. When a query asks for several things and
+the evidence supports at least one of them while contradicting another, the grade is **1**, not 0.
+Grade 0 is kept for restaurants where no requested topic is supported. 134 pooled grade-0 rows in
+multi-topic queries were re-judged under this rule: 89 became 1 and 45 stayed 0. Revised rows
+are marked `[partial-credit rule: ...]` in `judge_reason`.
