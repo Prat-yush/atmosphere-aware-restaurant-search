@@ -20,7 +20,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* Masthead */
 .mast { border-bottom: 4px double var(--rule); padding: 28px 0 16px; text-align: center; }
-.dateline { display: flex; justify-content: space-between; gap: 8px; font-weight: 700; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; border-bottom: 1px solid var(--rule); padding-bottom: 10px; margin-bottom: 16px; }
+.dateline { font-weight: 700; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; border-bottom: 1px solid var(--rule); padding-bottom: 10px; margin-bottom: 16px; }
 h1 { font: 800 clamp(42px, 9vw, 84px)/.95 "Libre Franklin", sans-serif; letter-spacing: -.03em; margin: 0; }
 .tagline { font-style: italic; color: var(--muted); margin: 12px 0 0; }
 .search { display: flex; border: 2px solid var(--ink); margin: 22px 0 0; text-align: left; }
@@ -113,7 +113,6 @@ code { font: 500 .85em ui-monospace, SFMono-Regular, Menlo, monospace; white-spa
 
 @media (max-width: 560px) {
   body { font-size: 17px; }
-  .dateline .mid { display: none; }
   .under { flex-direction: column; }
   .listing { grid-template-columns: 38px minmax(0, 1fr); gap: 0 12px; }
   .num { font-size: 44px; }
